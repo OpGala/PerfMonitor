@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
+
 namespace PerfMonitor
-{
+{ // This class is used to monitor the performance of methods in the application
       public static class PerformanceMonitor
       {
             private static readonly Dictionary<string, List<long>> FunctionTimings = new Dictionary<string, List<long>>();

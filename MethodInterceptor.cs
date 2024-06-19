@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace PerfMonitor
 {
-      public class MethodInterceptor : MonoBehaviour
+      public sealed class MethodInterceptor : MonoBehaviour
       {
-            void Awake()
+            private void Awake()
             {
                   var methods = GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
                   foreach (var method in methods)
@@ -24,6 +24,9 @@ namespace PerfMonitor
                   // Create a delegate for the method to be monitored
                   var originalDelegate = (Action)Delegate.CreateDelegate(typeof(Action), this, method);
 
+                  // Replace the original method with the monitored one
+                  ReplaceMethod(this, method.Name, MonitoredDelegate);
+
                   // Create a new delegate with the monitoring logic
                   void MonitoredDelegate()
                   {
@@ -31,9 +34,6 @@ namespace PerfMonitor
                         originalDelegate();
                         PerformanceMonitor.StopMonitoring(functionName);
                   }
-
-                  // Replace the original method with the monitored one
-                  ReplaceMethod(this, method.Name, MonitoredDelegate);
             }
 
             private static void ReplaceMethod(object target, string methodName, Action newMethod)
